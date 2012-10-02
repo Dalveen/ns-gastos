@@ -4,6 +4,8 @@
  */
 package db;
 
+import config.Configuracion;
+import config.ListaConfiguracion;
 import java.sql.*;
 
 /**
@@ -62,7 +64,14 @@ public class Mysql {
     }
     
     public static void main(String args[]) {
-        Mysql conexion = new Mysql("localhost","gastos_v2","gastos", "natalia");
+        ListaConfiguracion configuraciones = Configuracion.cargarConfiguracion("mysql.xml");
+        Mysql conexion = new Mysql(
+                (String) configuraciones.getPorIdentificador("mysql_server").getValor(),
+                (String) configuraciones.getPorIdentificador("mysql_port").getValor(),
+                (String) configuraciones.getPorIdentificador("mysql_db").getValor(),
+                (String) configuraciones.getPorIdentificador("mysql_user").getValor(),
+                (String) configuraciones.getPorIdentificador("mysql_password").getValor()
+                );
         
         if(conexion.openConnection()) {
             System.out.println("Todo ok");
@@ -72,12 +81,11 @@ public class Mysql {
         
         try {
             Statement stmt = conexion.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM EstructuraCampoEntidad");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM estructura_campo_entidad");
             
             while(rs.next()) {
-                System.out.println("id: "+rs.getInt(1)+" identificador: "+rs.getString(2));
+                System.out.println("id: "+rs.getInt(1)+" identificador: "+rs.getString(2)+" tipo: "+rs.getString(3));
             }
-            System.out.println("Hola".getClass().getName());
         } catch (Exception e) {
         }
     }

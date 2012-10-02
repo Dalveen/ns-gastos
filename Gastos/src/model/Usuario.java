@@ -118,14 +118,13 @@ public class Usuario extends Entidad {
         user.setApellidos("Apes nuevos");
         user.setActivo(false);
         user.setEmail("test@test.com");
-        
-        System.out.println();
+        user.cargarCamposAdicionales();
 
         
-        Iterator itModificaciones = user.getModificaciones().iterator();
+        Iterator itCampos = user.getCamposAdicionales().iterator();
         
-        while(itModificaciones.hasNext()) {
-            System.out.println(itModificaciones.next().toString());
+        while(itCampos.hasNext()) {
+            System.out.println(itCampos.next().toString());
         }
     }
     

@@ -4,6 +4,12 @@
  */
 package model;
 
+import config.Configuracion;
+import config.ListaConfiguracion;
+import db.Mysql;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +26,7 @@ public abstract class Entidad {
     protected boolean borrado;
     protected Date fechaDeCreacion;
     protected List<ModificacionEntidad> modificaciones;
-    protected List<CampoEntidad> camposAdicionales;
+    protected ListaCampoEntidad camposAdicionales;
 
     public Entidad(boolean activo) {
         this.uuid = UUID.randomUUID();
@@ -28,7 +34,7 @@ public abstract class Entidad {
         this.borrado = false;
         this.fechaDeCreacion = new Date();
         this.modificaciones = new ArrayList<>();
-        this.camposAdicionales = new ArrayList<>();
+        this.camposAdicionales = new ListaCampoEntidad(this);
     }
     
     public Entidad() {
@@ -37,7 +43,7 @@ public abstract class Entidad {
         this.borrado = false;
         this.fechaDeCreacion = new Date();
         this.modificaciones = new ArrayList<>();
-        this.camposAdicionales = new ArrayList<>();
+        this.camposAdicionales = new ListaCampoEntidad(this);
     }
 
     public UUID getUuid() {
@@ -93,7 +99,7 @@ public abstract class Entidad {
         return modificaciones;
     }
 
-    public List<CampoEntidad> getCamposAdicionales() {
+    public ListaCampoEntidad getCamposAdicionales() {
         return camposAdicionales;
     }
     
@@ -125,12 +131,30 @@ public abstract class Entidad {
         return "Entidad{" + "uuid=" + uuid + ", activo=" + activo + ", borrado=" + borrado + ", fechaDeCreacion=" + fechaDeCreacion + '}';
     }
     
-    protected ArrayList cargarCamposAdicionales() {
-        ArrayList<CampoEntidad> campos = new ArrayList<>();
-        String clase = this.getClass().getSimpleName();
-        
-        
-        
-        return campos;
+    protected void cargarCamposAdicionales() {
+        ListaCampoEntidad campos = new ListaCampoEntidad(this);
+        String clase = this.getClass().getName();
+        ListaConfiguracion configuraciones = Configuracion.cargarConfiguracion("mysql.xml");
+        Mysql conexion = new Mysql(
+                (String) configuraciones.getPorIdentificador("mysql_server").getValor(),
+                (String) configuraciones.getPorIdentificador("mysql_port").getValor(),
+                (String) configuraciones.getPorIdentificador("mysql_db").getValor(),
+                (String) configuraciones.getPorIdentificador("mysql_user").getValor(),
+                (String) configuraciones.getPorIdentificador("mysql_password").getValor()
+                );
+        try {     
+            conexion.openConnection();
+            PreparedStatement ps = conexion.getConnection().prepareStatement("SELECT * FROM estructura_campo_entidad ece WHERE ece.claseTipo = ?");
+            ps.setString(1, this.getClass().getName());
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                CampoEntidad campo = new CampoEntidad(this, rs.getString("identificador"), rs.getBoolean("requerido"));
+                campos.add(campo);
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }               
+        this.camposAdicionales = campos;
     }
 }

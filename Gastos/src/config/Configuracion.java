@@ -30,6 +30,11 @@ public class Configuracion {
     private String identificador;
     private Object valor;
     
+    public Configuracion(String identificador) {
+        this.identificador = identificador;
+        this.valor = null;
+    }
+    
     public Configuracion(String identificador, Object valor) {
         this.identificador = identificador;
         this.valor = valor;
@@ -97,11 +102,11 @@ public class Configuracion {
         return "Configuracion{" + "identificador=" + identificador + ", clase=" + valor.getClass().getName() + ", valor=" + valor + '}';
     }
     
-    public static ListaConfiguracion cargarConfiguracion() {
+    public static ListaConfiguracion cargarConfiguracion(String archivoEntrada) {
         ListaConfiguracion configuraciones = new ListaConfiguracion();
         try {
             SAXBuilder constructor = new SAXBuilder();
-            Document doc = constructor.build("config/configuracion.xml");
+            Document doc = constructor.build("config/"+archivoEntrada);
             Element raiz = doc.getRootElement();
             if(raiz.getName().equals("configuracion")) {
 
@@ -124,7 +129,7 @@ public class Configuracion {
         return configuraciones;
     }
     
-    public static void grabarConfiguracion(ListaConfiguracion configuraciones) {
+    public static void grabarConfiguracion(ListaConfiguracion configuraciones, String archivoSalida) {
         boolean valido = false;
         Element root = new Element("configuracion");
         Iterator itConfigs = configuraciones.iterator();
@@ -132,36 +137,17 @@ public class Configuracion {
             root.addContent(new Variable((Configuracion) itConfigs.next()));
         }
 
-        //Creamos el DocType que almacena el DTD para incluirlo en el XML
-        DocType dt = new DocType("departamentos","dtd/configuracion.dtd");
-
-        //Creamos el documento almacenando todo el arbol y el doctype
+        DocType dt = new DocType("configuracion","dtd/configuracion.dtd");
         Document doc = new Document(root,dt);
 
-        //Lo almacenamos en un fichero dado por argumento
         try {
             XMLOutputter salidaXml = new XMLOutputter(Format.getPrettyFormat());
-            try (FileOutputStream archivo = new FileOutputStream("config/configuracion.xml")) {
+            try (FileOutputStream archivo = new FileOutputStream("config/"+archivoSalida)) {
                 salidaXml.output(doc, archivo);
                 archivo.flush();
             }
         } catch(Exception ex) {
             System.out.println(ex.getMessage());
-        }
-    }
-    
-    public static void main(String[] args) {
-        ListaConfiguracion configs = Configuracion.cargarConfiguracion();
-        
-        Configuracion nueva = new Configuracion("prueba lalala", "hola que tal");
-        
-        configs.add(nueva);
-        Configuracion.grabarConfiguracion(configs);
-        
-        ListaConfiguracion configsNuevas = Configuracion.cargarConfiguracion();
-        Iterator itConfigs = configsNuevas.iterator();
-        while(itConfigs.hasNext()) {
-            System.out.println(itConfigs.next().toString());
         }
     }
 }
