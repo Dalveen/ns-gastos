@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE departamentos SYSTEM "dtd/configuracion.dtd">
+<configuracion>
+  <variable>
+    <identificador>mysql_server</identificador>
+    <clase>java.lang.String</clase>
+    <valor>localhost</valor>
+  </variable>
+  <variable>
+    <identificador>mysql_port</identificador>
+    <clase>java.lang.String</clase>
+    <valor>3306</valor>
+  </variable>
+  <variable>
+    <identificador>mysql_db</identificador>
+    <clase>java.lang.String</clase>
+    <valor>gastos_v2</valor>
+  </variable>
+  <variable>
+    <identificador>mysql_user</identificador>
+    <clase>java.lang.String</clase>
+    <valor>gastos</valor>
+  </variable>
+  <variable>
+    <identificador>mysql_password</identificador>
+    <clase>java.lang.String</clase>
+    <valor>natalia</valor>
+  </variable>
+</configuracion>

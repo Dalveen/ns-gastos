@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT configuracion (variable+)>
+<!ELEMENT variable (identificador,clase,valor)>
+<!ELEMENT identificador (#PCDATA)>
+<!ELEMENT clase (#PCDATA)>
+<!ELEMENT valor (#PCDATA)>

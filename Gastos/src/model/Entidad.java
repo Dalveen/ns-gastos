@@ -127,6 +127,7 @@ public abstract class Entidad {
     
     protected ArrayList cargarCamposAdicionales() {
         ArrayList<CampoEntidad> campos = new ArrayList<>();
+        String clase = this.getClass().getSimpleName();
         
         
         
