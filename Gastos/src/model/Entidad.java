@@ -125,4 +125,11 @@ public abstract class Entidad {
         return "Entidad{" + "uuid=" + uuid + ", activo=" + activo + ", borrado=" + borrado + ", fechaDeCreacion=" + fechaDeCreacion + '}';
     }
     
+    protected ArrayList cargarCamposAdicionales() {
+        ArrayList<CampoEntidad> campos = new ArrayList<>();
+        
+        
+        
+        return campos;
+    }
 }
