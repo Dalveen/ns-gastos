@@ -10,9 +10,7 @@ import db.Mysql;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,7 +23,7 @@ public abstract class Entidad {
     protected boolean activo;
     protected boolean borrado;
     protected Date fechaDeCreacion;
-    protected List<ModificacionEntidad> modificaciones;
+    protected ListaModificacionEntidad modificaciones;
     protected ListaCampoEntidad camposAdicionales;
 
     public Entidad(boolean activo) {
@@ -33,7 +31,7 @@ public abstract class Entidad {
         this.activo = activo;
         this.borrado = false;
         this.fechaDeCreacion = new Date();
-        this.modificaciones = new ArrayList<>();
+        this.modificaciones = new ListaModificacionEntidad(this);
         this.camposAdicionales = new ListaCampoEntidad(this);
     }
     
@@ -42,7 +40,7 @@ public abstract class Entidad {
         this.activo = true;
         this.borrado = false;
         this.fechaDeCreacion = new Date();
-        this.modificaciones = new ArrayList<>();
+        this.modificaciones = new ListaModificacionEntidad(this);
         this.camposAdicionales = new ListaCampoEntidad(this);
     }
 
@@ -95,7 +93,7 @@ public abstract class Entidad {
         this.modificaciones.add(modificacion);
     }
 
-    public List<ModificacionEntidad> getModificaciones() {
+    public ListaModificacionEntidad getModificaciones() {
         return modificaciones;
     }
 
